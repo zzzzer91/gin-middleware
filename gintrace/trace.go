@@ -10,7 +10,7 @@ import (
 
 func Trace() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ctx, span := tracex.StartTracing(newCtx(c), c.Request.Method+":"+c.FullPath())
+		ctx, span := tracex.StartTracing(newCtx(c), c.Request.Method+" "+c.FullPath())
 		defer span.End()
 		span.SetAttributes(attribute.String("uri", c.Request.RequestURI))
 		span.SetAttributes(attribute.String("method", c.Request.Method))
