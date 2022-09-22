@@ -16,6 +16,7 @@ func Trace() gin.HandlerFunc {
 		span.SetAttributes(attribute.String("method", c.Request.Method))
 		span.SetAttributes(attribute.String("ip", c.ClientIP()))
 		span.SetAttributes(attribute.String("userAgent", c.Request.UserAgent()))
+		span.SetAttributes(attribute.Int("contentLength", int(c.Request.ContentLength)))
 		c.Request = c.Request.WithContext(ctx)
 		c.Next()
 	}
