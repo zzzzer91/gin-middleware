@@ -32,8 +32,10 @@ func buildMsg(c *gin.Context, start time.Time) string {
 	sb.WriteString(c.Request.Method)
 	sb.WriteString(" `")
 	sb.WriteString(c.Request.URL.Path)
-	sb.WriteByte('?')
-	sb.WriteString(c.Request.URL.RawQuery)
+	if len(c.Request.URL.RawQuery) > 0 {
+		sb.WriteByte('?')
+		sb.WriteString(c.Request.URL.RawQuery)
+	}
 	sb.WriteString("`, used ")
 	sb.WriteString(time.Since(start).String())
 	return sb.String()
