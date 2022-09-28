@@ -2,7 +2,7 @@ package ginlogger
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/zzzzer91/gopkg/zlog"
+	"github.com/zzzzer91/zlog"
 	"strings"
 	"time"
 )

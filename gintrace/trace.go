@@ -3,14 +3,13 @@ package gintrace
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/zzzzer91/gopkg/tracex"
-	"github.com/zzzzer91/gopkg/zlog"
+	"github.com/zzzzer91/zlog"
 	"go.opentelemetry.io/otel/attribute"
 )
 
 func Trace() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ctx, span := tracex.StartTracing(newCtx(c), c.Request.Method+" "+c.FullPath())
+		ctx, span := zlog.StartTracing(newCtx(c), c.Request.Method+" "+c.FullPath())
 		defer span.End()
 		span.SetAttributes(attribute.String("path", c.Request.URL.Path+"?"+c.Request.URL.RawQuery))
 		span.SetAttributes(attribute.String("method", c.Request.Method))

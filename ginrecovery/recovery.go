@@ -12,7 +12,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
-	"github.com/zzzzer91/gopkg/zlog"
+	"github.com/zzzzer91/zlog"
 )
 
 var (
