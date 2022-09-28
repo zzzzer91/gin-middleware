@@ -11,7 +11,11 @@ func Trace() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, span := zlog.StartTracing(newCtx(c), c.Request.Method+" "+c.FullPath())
 		defer span.End()
-		span.SetAttributes(attribute.String("path", c.Request.URL.Path+"?"+c.Request.URL.RawQuery))
+		path := c.Request.URL.Path
+		if len(c.Request.URL.RawQuery) > 0 {
+			path += "?" + c.Request.URL.RawQuery
+		}
+		span.SetAttributes(attribute.String("path", path))
 		span.SetAttributes(attribute.String("method", c.Request.Method))
 		span.SetAttributes(attribute.String("ip", c.ClientIP()))
 		span.SetAttributes(attribute.String("userAgent", c.Request.UserAgent()))
