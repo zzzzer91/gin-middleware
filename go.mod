@@ -7,7 +7,7 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.13.0
-	github.com/zzzzer91/zlog v0.0.0-20220928082527-512a4469ac79
+	github.com/zzzzer91/zlog v0.0.0-20220928083719-98d0ba656e72
 	go.opentelemetry.io/otel v1.10.0
 )
 
