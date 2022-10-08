@@ -260,6 +260,8 @@ github.com/zzzzer91/zlog v0.0.0-20221008101753-0b15d3b6a1c2 h1:0eJithCH5tH6EsMca
 github.com/zzzzer91/zlog v0.0.0-20221008101753-0b15d3b6a1c2/go.mod h1:lXVpuAKzxvQuLICvElKzld+9GcU3YM+HzspABeoNBeY=
 github.com/zzzzer91/zlog v0.0.0-20221008105137-9d634c06c7d2 h1:09FLAvKRZ4j6U7YSD3oAsDr8f/VMl8bY8q75cnCBgME=
 github.com/zzzzer91/zlog v0.0.0-20221008105137-9d634c06c7d2/go.mod h1:DgnVyEPewnAIHTVp6DYcjhlpsG2QrNu4bRzxvrjbqRg=
+github.com/zzzzer91/zlog v0.0.0-20221008105430-30ebe2ca15a3 h1:SXXXnYN6tS9fDqm8FOAYA9PvxeHlNURvUGqk7wffDtc=
+github.com/zzzzer91/zlog v0.0.0-20221008105430-30ebe2ca15a3/go.mod h1:lXVpuAKzxvQuLICvElKzld+9GcU3YM+HzspABeoNBeY=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.opencensus.io v0.22.2/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=
