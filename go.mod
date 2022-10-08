@@ -1,12 +1,12 @@
 module github.com/zzzzer91/gin-middleware
 
-go 1.17
+go 1.18
 
 require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.13.0
-	github.com/zzzzer91/zlog v0.0.0-20221008101753-0b15d3b6a1c2
+	github.com/zzzzer91/zlog v0.0.0-20221008105137-9d634c06c7d2
 	go.opentelemetry.io/otel v1.10.0
 )
 
