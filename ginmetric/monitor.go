@@ -1,4 +1,4 @@
-package ginmetrics
+package ginmetric
 
 import (
 	"fmt"

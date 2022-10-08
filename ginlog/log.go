@@ -1,4 +1,4 @@
-package ginlogger
+package ginlog
 
 import (
 	"github.com/gin-gonic/gin"
@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func Logger() gin.HandlerFunc {
+func Log() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		c.Next()
