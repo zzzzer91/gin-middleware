@@ -6,8 +6,8 @@ require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.13.0
-	github.com/zzzzer91/zlog v0.0.0-20221008105430-30ebe2ca15a3
-	go.opentelemetry.io/otel v1.10.0
+	github.com/zzzzer91/zlog v0.0.0-20221019082041-da3773531b41
+	go.opentelemetry.io/otel v1.11.1
 )
 
 require (
@@ -24,7 +24,7 @@ require (
 	github.com/goccy/go-json v0.9.11 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/cpuid/v2 v2.1.1 // indirect
+	github.com/klauspost/cpuid/v2 v2.1.2 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
@@ -37,11 +37,11 @@ require (
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
-	go.opentelemetry.io/otel/trace v1.10.0 // indirect
-	golang.org/x/arch v0.0.0-20220927172834-6a65923eb742 // indirect
+	go.opentelemetry.io/otel/trace v1.11.1 // indirect
+	golang.org/x/arch v0.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b // indirect
 	golang.org/x/net v0.0.0-20221004154528-8021a29435af // indirect
-	golang.org/x/sys v0.0.0-20221006211917-84dc82d7e875 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
