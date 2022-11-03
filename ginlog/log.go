@@ -1,31 +1,34 @@
 package ginlog
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/zzzzer91/zlog"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/zzzzer91/zlog"
 )
 
-func Log() gin.HandlerFunc {
+func Log(isLogInfo bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		c.Next()
+		used := time.Since(start)
+		ctx := c.Request.Context()
 		var err error
 		if len(c.Errors) > 0 {
 			err = c.Errors[len(c.Errors)-1].Err
 		}
-		ctx := c.Request.Context()
-		msg := buildMsg(c, start)
 		if err != nil {
-			zlog.Ctx(ctx).WithError(err).Error(msg)
+			zlog.Ctx(ctx).WithError(err).Error(buildErrorMsg(c, used))
 		} else {
-			zlog.Ctx(ctx).Info(msg)
+			if isLogInfo {
+				zlog.Ctx(ctx).Info(buildInfoMsg(c, used))
+			}
 		}
 	}
 }
 
-func buildMsg(c *gin.Context, start time.Time) string {
+func buildInfoMsg(c *gin.Context, used time.Duration) string {
 	sb := strings.Builder{}
 	sb.WriteString(c.ClientIP())
 	sb.WriteByte(' ')
@@ -37,6 +40,23 @@ func buildMsg(c *gin.Context, start time.Time) string {
 		sb.WriteString(c.Request.URL.RawQuery)
 	}
 	sb.WriteString("`, used ")
-	sb.WriteString(time.Since(start).String())
+	sb.WriteString(used.String())
+	return sb.String()
+}
+
+func buildErrorMsg(c *gin.Context, used time.Duration) string {
+	sb := strings.Builder{}
+	sb.WriteString(c.ClientIP())
+	sb.WriteByte(' ')
+	sb.WriteString(c.Request.Method)
+	sb.WriteString(" `")
+	sb.WriteString(c.Request.URL.Path)
+	if len(c.Request.URL.RawQuery) > 0 {
+		sb.WriteByte('?')
+		sb.WriteString(c.Request.URL.RawQuery)
+	}
+	sb.WriteString("`, used ")
+	sb.WriteString(used.String())
+	sb.WriteString(" , error!")
 	return sb.String()
 }
