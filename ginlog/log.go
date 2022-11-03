@@ -57,6 +57,6 @@ func buildErrorMsg(c *gin.Context, used time.Duration) string {
 	}
 	sb.WriteString("`, used ")
 	sb.WriteString(used.String())
-	sb.WriteString(" , error!")
+	sb.WriteString(", error!")
 	return sb.String()
 }
