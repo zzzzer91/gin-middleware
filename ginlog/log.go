@@ -1,16 +1,23 @@
 package ginlog
 
 import (
+	"context"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/zzzzer91/zlog"
+)
+
+const (
+	httpHeaderFieldNameRequestID = "X-Request-ID"
 )
 
 func Log(isLogInfo bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
+		c.Request = c.Request.WithContext(newCtx(c))
 		c.Next()
 		used := time.Since(start)
 		ctx := c.Request.Context()
@@ -26,6 +33,16 @@ func Log(isLogInfo bool) gin.HandlerFunc {
 			}
 		}
 	}
+}
+
+func newCtx(c *gin.Context) context.Context {
+	ctx := c.Request.Context()
+	if requestID := c.GetHeader(httpHeaderFieldNameRequestID); requestID != "" {
+		ctx = context.WithValue(ctx, zlog.EntityFieldNameRequestID, requestID)
+	} else {
+		ctx = context.WithValue(ctx, zlog.EntityFieldNameRequestID, uuid.New().String())
+	}
+	return ctx
 }
 
 func buildInfoMsg(c *gin.Context, used time.Duration) string {

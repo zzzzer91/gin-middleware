@@ -1,7 +1,6 @@
 package gintrace
 
 import (
-	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/zzzzer91/zlog"
 	"go.opentelemetry.io/otel/attribute"
@@ -9,7 +8,7 @@ import (
 
 func Trace() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ctx, span := zlog.StartTracing(newCtx(c), c.Request.Method+" "+c.FullPath())
+		ctx, span := zlog.StartTracing(c.Request.Context(), c.Request.Method+" "+c.FullPath())
 		defer span.End()
 		path := c.Request.URL.Path
 		if len(c.Request.URL.RawQuery) > 0 {
@@ -24,12 +23,4 @@ func Trace() gin.HandlerFunc {
 		c.Next()
 		span.SetAttributes(attribute.Int("resp.body.size", c.Writer.Size()))
 	}
-}
-
-func newCtx(c *gin.Context) context.Context {
-	ctx := c.Request.Context()
-	if requestID := c.GetHeader(httpHeaderFieldNameRequestID); requestID != "" {
-		ctx = context.WithValue(ctx, zlog.EntityFieldNameRequestID, requestID)
-	}
-	return ctx
 }
