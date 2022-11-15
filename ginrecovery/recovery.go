@@ -38,9 +38,9 @@ func Recovery() gin.HandlerFunc {
 						}
 					}
 					headersToStr := strings.Join(headers, "\r\n")
-					zlog.Ctx(ctx).WithError(errors.Errorf("%v", err)).Panicf("broken pipe, headers: %s", headersToStr)
+					zlog.Ctx(ctx).WithError(errors.Errorf("%v", err)).Errorf("broken pipe, headers: %s", headersToStr)
 				} else {
-					zlog.Ctx(ctx).WithError(errors.Errorf("%v", err)).Panic("panic recovered")
+					zlog.Ctx(ctx).WithError(errors.Errorf("%v", err)).Error("panic recovered")
 				}
 
 				if brokenPipe {
