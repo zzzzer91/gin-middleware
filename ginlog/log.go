@@ -18,8 +18,9 @@ func Log(isLogInfo bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		ctx := newCtx(c)
+		basicMsg := buildBasicMsg(c)
 		if isLogInfo {
-			zlog.Ctx(ctx).Info(buildBeginMsg(c))
+			zlog.Ctx(ctx).Info(buildBeginMsg(basicMsg))
 		}
 		c.Request = c.Request.WithContext(ctx)
 		c.Next()
@@ -30,10 +31,10 @@ func Log(isLogInfo bool) gin.HandlerFunc {
 			err = c.Errors[len(c.Errors)-1].Err
 		}
 		if err != nil {
-			zlog.Ctx(ctx).WithError(err).Error(buildErrorMsg(c, used))
+			zlog.Ctx(ctx).WithError(err).Error(buildErrorMsg(basicMsg, used))
 		} else {
 			if isLogInfo {
-				zlog.Ctx(ctx).Info(buildCostMsg(c, used))
+				zlog.Ctx(ctx).Info(buildCostMsg(basicMsg, used))
 			}
 		}
 	}
@@ -49,7 +50,7 @@ func newCtx(c *gin.Context) context.Context {
 	return ctx
 }
 
-func buildBasicMsg(c *gin.Context) strings.Builder {
+func buildBasicMsg(c *gin.Context) string {
 	sb := strings.Builder{}
 	sb.WriteString(c.ClientIP())
 	sb.WriteByte(' ')
@@ -60,26 +61,18 @@ func buildBasicMsg(c *gin.Context) strings.Builder {
 		sb.WriteByte('?')
 		sb.WriteString(c.Request.URL.RawQuery)
 	}
-	return sb
-}
-
-func buildBeginMsg(c *gin.Context) string {
-	sb := buildBasicMsg(c)
-	sb.WriteString("`, started")
+	sb.WriteByte('`')
 	return sb.String()
 }
 
-func buildCostMsg(c *gin.Context, used time.Duration) string {
-	sb := buildBasicMsg(c)
-	sb.WriteString("`, used ")
-	sb.WriteString(used.String())
-	return sb.String()
+func buildBeginMsg(basicMsg string) string {
+	return basicMsg + ", started"
 }
 
-func buildErrorMsg(c *gin.Context, used time.Duration) string {
-	sb := buildBasicMsg(c)
-	sb.WriteString("`, used ")
-	sb.WriteString(used.String())
-	sb.WriteString(", error!")
-	return sb.String()
+func buildCostMsg(basicMsg string, used time.Duration) string {
+	return basicMsg + ", used " + used.String()
+}
+
+func buildErrorMsg(basicMsg string, used time.Duration) string {
+	return basicMsg + ", used " + used.String() + ", error!"
 }
