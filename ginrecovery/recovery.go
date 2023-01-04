@@ -3,13 +3,11 @@ package ginrecovery
 import (
 	"net"
 	"net/http"
-	"net/http/httputil"
 	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
-	"github.com/zzzzer91/zlog"
 )
 
 func Recovery() gin.HandlerFunc {
@@ -27,20 +25,10 @@ func Recovery() gin.HandlerFunc {
 						}
 					}
 				}
-				ctx := c.Request.Context()
 				if brokenPipe {
-					httpRequest, _ := httputil.DumpRequest(c.Request, false)
-					headers := strings.Split(string(httpRequest), "\r\n")
-					for idx, header := range headers {
-						current := strings.Split(header, ":")
-						if current[0] == "Authorization" {
-							headers[idx] = current[0] + ": *"
-						}
-					}
-					headersToStr := strings.Join(headers, "\r\n")
-					zlog.Ctx(ctx).WithError(errors.Errorf("%v", err)).Errorf("broken pipe, headers: %s", headersToStr)
+					_ = c.Error(errors.Errorf("panic recovered, broken pipe: %v", err))
 				} else {
-					zlog.Ctx(ctx).WithError(errors.Errorf("%v", err)).Error("panic recovered")
+					_ = c.Error(errors.Errorf("panic recovered: %v", err))
 				}
 
 				if brokenPipe {
