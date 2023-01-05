@@ -3,7 +3,7 @@ package gingzip
 import (
 	"compress/gzip"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"strings"
 	"sync"
 
@@ -13,7 +13,7 @@ import (
 var (
 	bestSpeedGzPool = &sync.Pool{
 		New: func() interface{} {
-			gz, err := gzip.NewWriterLevel(ioutil.Discard, gzip.BestSpeed)
+			gz, err := gzip.NewWriterLevel(io.Discard, gzip.BestSpeed)
 			if err != nil {
 				panic(err)
 			}
@@ -22,7 +22,7 @@ var (
 	}
 	bestCompressionGzPool = &sync.Pool{
 		New: func() interface{} {
-			gz, err := gzip.NewWriterLevel(ioutil.Discard, gzip.BestCompression)
+			gz, err := gzip.NewWriterLevel(io.Discard, gzip.BestCompression)
 			if err != nil {
 				panic(err)
 			}
@@ -31,7 +31,7 @@ var (
 	}
 	defaultCompressionGzPool = &sync.Pool{
 		New: func() interface{} {
-			gz, err := gzip.NewWriterLevel(ioutil.Discard, gzip.DefaultCompression)
+			gz, err := gzip.NewWriterLevel(io.Discard, gzip.DefaultCompression)
 			if err != nil {
 				panic(err)
 			}
@@ -78,14 +78,14 @@ func Wrap(f gin.HandlerFunc, level int) gin.HandlerFunc {
 			!strings.Contains(req.Header.Get("Accept"), "text/event-stream") {
 			gz := gzPool.Get().(*gzip.Writer)
 			defer gzPool.Put(gz)
-			defer gz.Reset(ioutil.Discard)
+			defer gz.Reset(io.Discard)
 			gz.Reset(c.Writer)
 
 			c.Header("Content-Encoding", "gzip")
 			c.Header("Vary", "Accept-Encoding")
 			c.Writer = &gzipWriter{c.Writer, gz}
 			defer func() {
-				gz.Close()
+				_ = gz.Close()
 				c.Header("Content-Length", fmt.Sprint(c.Writer.Size()))
 			}()
 		}

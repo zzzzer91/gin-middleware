@@ -7,7 +7,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.13.0
-	github.com/zzzzer91/zlog v0.0.0-20230105075023-68059254238e
+	github.com/zzzzer91/zlog v0.0.0-20230105080842-5892b341b961
 	go.opentelemetry.io/otel v1.10.0
 )
 
