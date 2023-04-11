@@ -251,8 +251,8 @@ github.com/ugorji/go/codec v1.2.9/go.mod h1:UNopzCgEMSXjBc6AOMqYvWC1ktqTAfzJZUZg
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
-github.com/zzzzer91/zlog v0.0.0-20230409111138-25f2e1c74881 h1:R7qTQmqoN//Ptg8XPyV91W9N6UJE9Zzio20trzTInlE=
-github.com/zzzzer91/zlog v0.0.0-20230409111138-25f2e1c74881/go.mod h1:1jVoBoCviWs/PhhM/2+Hg/UKmFX7CMgs/U/U0LFFLC4=
+github.com/zzzzer91/zlog v0.0.0-20230411040937-1f42811e6b43 h1:C0Wg0bSaxhOMraCV7EJWuXd0Y/50Hm7tWOyhjsJiph0=
+github.com/zzzzer91/zlog v0.0.0-20230411040937-1f42811e6b43/go.mod h1:1jVoBoCviWs/PhhM/2+Hg/UKmFX7CMgs/U/U0LFFLC4=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.opencensus.io v0.22.2/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=
