@@ -38,7 +38,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.9 // indirect
-	github.com/zzzzer91/gopkg v0.0.0-20230505032855-a3cb107cfc02 // indirect
+	github.com/zzzzer91/gopkg v0.0.0-20230505041801-df9aeca8ee0a // indirect
 	go.opentelemetry.io/otel/trace v1.13.0 // indirect
 	golang.org/x/arch v0.2.0 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
