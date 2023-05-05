@@ -2,8 +2,8 @@ package gingzip
 
 import (
 	"compress/gzip"
-	"fmt"
 	"io"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -41,7 +41,7 @@ func (g *gzipWriter) WriteHeader(code int) {
 	g.ResponseWriter.WriteHeader(code)
 }
 
-func Wrap(f gin.HandlerFunc, level int) gin.HandlerFunc {
+func Gzip(level int) gin.HandlerFunc {
 	var gzPool *sync.Pool
 	switch level {
 	case gzip.BestSpeed:
@@ -92,16 +92,16 @@ func Wrap(f gin.HandlerFunc, level int) gin.HandlerFunc {
 			gz := gzPool.Get().(*gzip.Writer)
 			defer gzPool.Put(gz)
 			defer gz.Reset(io.Discard)
-			gz.Reset(c.Writer)
 
+			gz.Reset(c.Writer)
 			c.Header("Content-Encoding", "gzip")
 			c.Header("Vary", "Accept-Encoding")
 			c.Writer = &gzipWriter{c.Writer, gz}
 			defer func() {
 				_ = gz.Close()
-				c.Header("Content-Length", fmt.Sprint(c.Writer.Size()))
+				c.Header("Content-Length", strconv.Itoa(c.Writer.Size()))
 			}()
 		}
-		f(c)
+		c.Next()
 	}
 }
