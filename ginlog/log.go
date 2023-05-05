@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/zzzzer91/zlog"
 )
 
@@ -42,10 +41,8 @@ func Log(isLogInfo bool) gin.HandlerFunc {
 
 func newCtx(c *gin.Context) context.Context {
 	ctx := c.Request.Context()
-	if requestID := c.GetHeader(httpHeaderFieldNameRequestId); requestID != "" {
-		ctx = context.WithValue(ctx, zlog.EntityFieldNameRequestId, requestID)
-	} else {
-		ctx = context.WithValue(ctx, zlog.EntityFieldNameRequestId, uuid.New().String())
+	if requestId := c.GetHeader(httpHeaderFieldNameRequestId); requestId != "" {
+		ctx = context.WithValue(ctx, zlog.EntityFieldNameRequestId, requestId)
 	}
 	return ctx
 }
