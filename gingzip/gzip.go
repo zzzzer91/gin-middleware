@@ -11,33 +11,13 @@ import (
 )
 
 var (
-	bestSpeedGzPool = &sync.Pool{
-		New: func() interface{} {
-			gz, err := gzip.NewWriterLevel(io.Discard, gzip.BestSpeed)
-			if err != nil {
-				panic(err)
-			}
-			return gz
-		},
-	}
-	bestCompressionGzPool = &sync.Pool{
-		New: func() interface{} {
-			gz, err := gzip.NewWriterLevel(io.Discard, gzip.BestCompression)
-			if err != nil {
-				panic(err)
-			}
-			return gz
-		},
-	}
-	defaultCompressionGzPool = &sync.Pool{
-		New: func() interface{} {
-			gz, err := gzip.NewWriterLevel(io.Discard, gzip.DefaultCompression)
-			if err != nil {
-				panic(err)
-			}
-			return gz
-		},
-	}
+	bestSpeedGzPoolOnce          sync.Once
+	bestCompressionGzPoolOnce    sync.Once
+	defaultCompressionGzPoolOnce sync.Once
+
+	bestSpeedGzPool          *sync.Pool
+	bestCompressionGzPool    *sync.Pool
+	defaultCompressionGzPool *sync.Pool
 )
 
 type gzipWriter struct {
@@ -65,10 +45,43 @@ func Wrap(f gin.HandlerFunc, level int) gin.HandlerFunc {
 	var gzPool *sync.Pool
 	switch level {
 	case gzip.BestSpeed:
+		bestSpeedGzPoolOnce.Do(func() {
+			bestSpeedGzPool = &sync.Pool{
+				New: func() interface{} {
+					gz, err := gzip.NewWriterLevel(io.Discard, gzip.BestSpeed)
+					if err != nil {
+						panic(err)
+					}
+					return gz
+				},
+			}
+		})
 		gzPool = bestSpeedGzPool
 	case gzip.BestCompression:
+		bestCompressionGzPoolOnce.Do(func() {
+			bestCompressionGzPool = &sync.Pool{
+				New: func() interface{} {
+					gz, err := gzip.NewWriterLevel(io.Discard, gzip.BestCompression)
+					if err != nil {
+						panic(err)
+					}
+					return gz
+				},
+			}
+		})
 		gzPool = bestCompressionGzPool
 	default:
+		defaultCompressionGzPoolOnce.Do(func() {
+			defaultCompressionGzPool = &sync.Pool{
+				New: func() interface{} {
+					gz, err := gzip.NewWriterLevel(io.Discard, gzip.DefaultCompression)
+					if err != nil {
+						panic(err)
+					}
+					return gz
+				},
+			}
+		})
 		gzPool = defaultCompressionGzPool
 	}
 	return func(c *gin.Context) {
