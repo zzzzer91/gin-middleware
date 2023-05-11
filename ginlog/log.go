@@ -44,6 +44,7 @@ func newCtx(c *gin.Context) context.Context {
 	if requestId := c.GetHeader(httpHeaderFieldNameRequestId); requestId != "" {
 		ctx = context.WithValue(ctx, zlog.EntityFieldNameRequestId, requestId)
 	}
+	ctx = zlog.AddLogIdToCtx(ctx)
 	return ctx
 }
 
