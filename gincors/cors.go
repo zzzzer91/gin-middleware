@@ -13,10 +13,10 @@ func Cors(allowOrigin string, maxAge time.Duration) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Next()
 		if c.Writer.Status() == http.StatusOK {
-			c.Writer.Header().Set("Access-Control-Allow-Origin", allowOrigin)
-			c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-			c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-			c.Writer.Header().Set("Access-Control-Max-Age", fmt.Sprintf("%.f", maxAge.Seconds()))
+			c.Header("Access-Control-Allow-Origin", allowOrigin)
+			c.Header("Access-Control-Allow-Credentials", "true")
+			c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
+			c.Header("Access-Control-Max-Age", fmt.Sprintf("%.f", maxAge.Seconds()))
 		}
 	}
 }
@@ -26,10 +26,10 @@ func CorsGlobal(allowOrigin string, maxAge time.Duration) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
-			c.Writer.Header().Set("Access-Control-Allow-Origin", allowOrigin)
-			c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-			c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE")
-			c.Writer.Header().Set("Access-Control-Max-Age", fmt.Sprintf("%.f", maxAge.Seconds()))
+			c.Header("Access-Control-Allow-Origin", allowOrigin)
+			c.Header("Access-Control-Allow-Credentials", "true")
+			c.Header("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE")
+			c.Header("Access-Control-Max-Age", fmt.Sprintf("%.f", maxAge.Seconds()))
 			return
 		}
 		c.Next()
