@@ -15,15 +15,15 @@ func Trace() gin.HandlerFunc {
 			if len(c.Request.URL.RawQuery) > 0 {
 				path += "?" + c.Request.URL.RawQuery
 			}
-			span.SetAttributes(attribute.String("path", path))
-			span.SetAttributes(attribute.String("method", c.Request.Method))
+			span.SetAttributes(attribute.String("http.path", path))
+			span.SetAttributes(attribute.String("http.method", c.Request.Method))
 			span.SetAttributes(attribute.String("ip", c.ClientIP()))
-			span.SetAttributes(attribute.String("userAgent", c.Request.UserAgent()))
-			span.SetAttributes(attribute.Int("req.body.size", int(c.Request.ContentLength)))
+			span.SetAttributes(attribute.String("http.userAgent", c.Request.UserAgent()))
+			span.SetAttributes(attribute.Int("http.req.body.size", int(c.Request.ContentLength)))
 			c.Request = c.Request.WithContext(ctx)
 			c.Next()
-			span.SetAttributes(attribute.Int("resp.body.size", c.Writer.Size()))
-			span.SetAttributes(attribute.Int("status", c.Writer.Status()))
+			span.SetAttributes(attribute.Int("http.resp.body.size", c.Writer.Size()))
+			span.SetAttributes(attribute.Int("http.status_code", c.Writer.Status()))
 		} else {
 			c.Next()
 		}
