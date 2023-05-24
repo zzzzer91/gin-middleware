@@ -108,13 +108,24 @@ var (
 	}
 )
 
+// Fix: https://github.com/gin-gonic/gin/issues/2406
+type cacheControlWriter struct {
+	gin.ResponseWriter
+	value string
+}
+
+func (w *cacheControlWriter) WriteHeader(statusCode int) {
+	if statusCode == http.StatusOK {
+		w.Header().Add(CacheControlHeader, w.value)
+	}
+	w.ResponseWriter.WriteHeader(statusCode)
+}
+
 func CacheControl(cfg *Config) gin.HandlerFunc {
 	value := cfg.buildCacheControl()
 
 	return func(c *gin.Context) {
+		c.Writer = &cacheControlWriter{ResponseWriter: c.Writer, value: value}
 		c.Next()
-		if c.Writer.Status() == http.StatusOK {
-			c.Header(CacheControlHeader, value)
-		}
 	}
 }

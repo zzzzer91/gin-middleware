@@ -8,16 +8,30 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Fix: https://github.com/gin-gonic/gin/issues/2406
+type corsWriter struct {
+	gin.ResponseWriter
+	allowOrigin string
+	maxAge      string
+}
+
+func (w *corsWriter) WriteHeader(statusCode int) {
+	if statusCode == http.StatusOK {
+		w.Header().Add("Access-Control-Allow-Origin", w.allowOrigin)
+		w.Header().Add("Access-Control-Allow-Credentials", "true")
+		w.Header().Add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
+		w.Header().Add("Access-Control-Max-Age", w.maxAge)
+	}
+	w.ResponseWriter.WriteHeader(statusCode)
+}
+
 // for single route
 func Cors(allowOrigin string, maxAge time.Duration) gin.HandlerFunc {
+	maxAgeStr := fmt.Sprintf("%.f", maxAge.Seconds())
+
 	return func(c *gin.Context) {
+		c.Writer = &corsWriter{ResponseWriter: c.Writer, allowOrigin: allowOrigin, maxAge: maxAgeStr}
 		c.Next()
-		if c.Writer.Status() == http.StatusOK {
-			c.Header("Access-Control-Allow-Origin", allowOrigin)
-			c.Header("Access-Control-Allow-Credentials", "true")
-			c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
-			c.Header("Access-Control-Max-Age", fmt.Sprintf("%.f", maxAge.Seconds()))
-		}
 	}
 }
 
