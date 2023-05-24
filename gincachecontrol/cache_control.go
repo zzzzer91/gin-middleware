@@ -113,9 +113,8 @@ func CacheControl(cfg *Config) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		c.Next()
-		writer := c.Writer
-		if writer.Status() == http.StatusOK {
-			writer.Header().Set(CacheControlHeader, value)
+		if c.Writer.Status() == http.StatusOK {
+			c.Header(CacheControlHeader, value)
 		}
 	}
 }
