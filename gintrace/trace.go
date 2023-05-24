@@ -23,6 +23,7 @@ func Trace() gin.HandlerFunc {
 			c.Request = c.Request.WithContext(ctx)
 			c.Next()
 			span.SetAttributes(attribute.Int("resp.body.size", c.Writer.Size()))
+			span.SetAttributes(attribute.Int("status", c.Writer.Status()))
 		} else {
 			c.Next()
 		}
