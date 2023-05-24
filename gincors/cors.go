@@ -1,19 +1,37 @@
 package gincors
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+	"net/http"
+	"time"
 
-func Cors(allowOrigin, maxAge string) gin.HandlerFunc {
+	"github.com/gin-gonic/gin"
+)
+
+// for single route
+func Cors(allowOrigin string, maxAge time.Duration) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", allowOrigin)
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-		c.Writer.Header().Set("Access-Control-Max-Age", maxAge) // cache one day
+		c.Next()
+		if c.Writer.Status() == http.StatusOK {
+			c.Writer.Header().Set("Access-Control-Allow-Origin", allowOrigin)
+			c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+			c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
+			c.Writer.Header().Set("Access-Control-Max-Age", fmt.Sprintf("%.f", maxAge.Seconds()))
+		}
+	}
+}
 
+// for global usage
+func CorsGlobal(allowOrigin string, maxAge time.Duration) gin.HandlerFunc {
+	return func(c *gin.Context) {
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
+			c.Writer.Header().Set("Access-Control-Allow-Origin", allowOrigin)
+			c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+			c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE")
+			c.Writer.Header().Set("Access-Control-Max-Age", fmt.Sprintf("%.f", maxAge.Seconds()))
 			return
 		}
-
 		c.Next()
 	}
 }
