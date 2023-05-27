@@ -89,7 +89,7 @@ func (c *Config) buildCacheControl() string {
 
 var (
 	// NoCachePreset is a cache-control configuration preset which advices the HTTP client not to cache at all.
-	NoCachePreset = Config{
+	NoCachePreset = &Config{
 		MustRevalidate: true,
 		NoCache:        true,
 		NoStore:        true,
@@ -98,7 +98,7 @@ var (
 	// CacheAssetsForeverPreset is a cache-control configuration preset which advices the HTTP client
 	// and all caches in between to cache the object forever without revalidation.
 	// Technically, "forever" means 1 year, in order to comply with common CDN limits.
-	CacheAssetsForeverPreset = Config{
+	CacheAssetsForeverPreset = &Config{
 		Public: true,
 		MaxAge: func() *time.Duration {
 			t := 8760 * time.Hour
