@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CheckingAuthorizationBearer(token string) gin.HandlerFunc {
+func CheckAuthorizationBearer(token string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		s := c.GetHeader("Authorization")
 		fields := strings.Fields(s)
