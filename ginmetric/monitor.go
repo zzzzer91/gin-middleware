@@ -2,11 +2,12 @@ package ginmetric
 
 import (
 	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
-	"strconv"
-	"time"
 )
 
 // Monitor is an object that uses to set gin server monitor.
@@ -87,7 +88,7 @@ func (m *Monitor) initGinMetrics() {
 		Type:        Counter,
 		Name:        metricURIRequestTotal,
 		Description: "all the server received request num with every uri.",
-		Labels:      []string{"uri", "method", "code"},
+		Labels:      []string{"uri", "method", "code", "ip"},
 	})
 	_ = monitor.AddMetric(&Metric{
 		Type:        Counter,
@@ -131,7 +132,7 @@ func (m *Monitor) ginMetricHandle(ctx *gin.Context, start time.Time) {
 	r := ctx.Request
 	w := ctx.Writer
 
-	labelValues := []string{ctx.FullPath(), r.Method, strconv.Itoa(w.Status())}
+	labelValues := []string{ctx.FullPath(), r.Method, strconv.Itoa(w.Status()), ctx.ClientIP()}
 
 	// set uri request total
 	_ = m.GetMetric(metricURIRequestTotal).Inc(labelValues)
