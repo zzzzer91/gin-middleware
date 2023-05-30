@@ -17,7 +17,11 @@ func Trace() gin.HandlerFunc {
 			}
 			span.SetAttributes(attribute.String("http.path", path))
 			span.SetAttributes(attribute.String("http.method", c.Request.Method))
+			span.SetAttributes(attribute.String("http.proto", c.Request.Proto))
 			span.SetAttributes(attribute.String("ip", c.ClientIP()))
+			if ipCountry := c.GetHeader("CF-IPCountry"); ipCountry != "" {
+				span.SetAttributes(attribute.String("ipCountry", ipCountry))
+			}
 			span.SetAttributes(attribute.String("http.userAgent", c.Request.UserAgent()))
 			span.SetAttributes(attribute.Int("http.req.body.size", int(c.Request.ContentLength)))
 			c.Request = c.Request.WithContext(ctx)
