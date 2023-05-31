@@ -10,13 +10,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-// Monitor is an object that uses to set gin server monitor.
-type Monitor struct {
-	slowTime    int32
-	reqDuration []float64
-	metrics     map[string]*Metric
-}
-
 const (
 	metricURIRequestTotal = "gin_uri_request_total"
 	metricRequestBody     = "gin_request_body_total"
@@ -26,8 +19,19 @@ const (
 )
 
 var (
-	defaultDuration = []float64{0.05, 0.1, 0.3, 1.2, 5, 10}
-	monitor         *Monitor
+	// Milliseconds
+	defaultDuration = []float64{25, 50, 100, 250, 500, 1000, 2500, 5000, 10000}
+)
+
+// Monitor is an object that uses to set gin server monitor.
+type Monitor struct {
+	slowTime    int32
+	reqDuration []float64
+	metrics     map[string]*Metric
+}
+
+var (
+	monitor *Monitor
 )
 
 // GetMonitor used to get global Monitor object,
@@ -151,7 +155,7 @@ func (m *Monitor) ginMetricHandle(ctx *gin.Context, start time.Time) {
 	latency := time.Since(start)
 
 	// set request duration
-	_ = m.GetMetric(metricRequestDuration).Observe(labelValues[:2], latency.Seconds())
+	_ = m.GetMetric(metricRequestDuration).Observe(labelValues[:2], float64(latency.Milliseconds()))
 
 	// set slow request
 	if int32(latency.Seconds()) > m.slowTime {
