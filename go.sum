@@ -90,8 +90,8 @@ github.com/ugorji/go/codec v1.2.9 h1:rmenucSohSTiyL09Y+l2OCk+FrMxGMzho2+tjr5ticU
 github.com/ugorji/go/codec v1.2.9/go.mod h1:UNopzCgEMSXjBc6AOMqYvWC1ktqTAfzJZUZgYf6w6lg=
 github.com/zzzzer91/gopkg v0.0.0-20230505041801-df9aeca8ee0a h1:6DT4ShsBKzAwPHEJ+idGrDwwpupJ1o6CJHCPIEegtE4=
 github.com/zzzzer91/gopkg v0.0.0-20230505041801-df9aeca8ee0a/go.mod h1:BwLbYdJcx967Qgl11iPNJhxvrG2xBJDhCbkMREZwCHo=
-github.com/zzzzer91/prometheus-monitor v0.0.0-20230531025159-1b9d7362a1f5 h1:FldZp63mGzmjpkqWcxmOYmSioIjsc/98CtBBdKw190A=
-github.com/zzzzer91/prometheus-monitor v0.0.0-20230531025159-1b9d7362a1f5/go.mod h1:OVBGeRhk7NVTPTYFVYv2uLKz8pq4WiWZZrSG/MUHoQs=
+github.com/zzzzer91/prometheus-monitor v0.0.0-20230531035128-716374e2b968 h1:7nxISYiuxmNXB4vvzOK2OPQ75/FPngG8RXDS8mqoUvw=
+github.com/zzzzer91/prometheus-monitor v0.0.0-20230531035128-716374e2b968/go.mod h1:OVBGeRhk7NVTPTYFVYv2uLKz8pq4WiWZZrSG/MUHoQs=
 github.com/zzzzer91/zlog v0.0.0-20230524093435-05b0b983e1b5 h1:GjXeapeATL9MaeoaEx7Xzpu4Jischtt3/wbB8mFkEsw=
 github.com/zzzzer91/zlog v0.0.0-20230524093435-05b0b983e1b5/go.mod h1:cZrGQXi8yDi6Z90qCP6TMmEep4ny4SmTcQb4RKqGrVw=
 go.opentelemetry.io/otel v1.15.1 h1:3Iwq3lfRByPaws0f6bU3naAqOR1n5IeDWd9390kWHa8=

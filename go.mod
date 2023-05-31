@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/gin-gonic/gin v1.9.0
 	github.com/pkg/errors v0.9.1
-	github.com/zzzzer91/prometheus-monitor v0.0.0-20230531025159-1b9d7362a1f5
+	github.com/zzzzer91/prometheus-monitor v0.0.0-20230531035128-716374e2b968
 	github.com/zzzzer91/zlog v0.0.0-20230524093435-05b0b983e1b5
 	go.opentelemetry.io/otel v1.15.1
 )
