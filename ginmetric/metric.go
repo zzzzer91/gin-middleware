@@ -1,147 +1,111 @@
 package ginmetric
 
 import (
-	"github.com/pkg/errors"
-	"github.com/prometheus/client_golang/prometheus"
+	"fmt"
+	"strconv"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	monitor "github.com/zzzzer91/prometheus-monitor"
 )
 
-type MetricType int
+// Metric register gin metrics.
+func Metric(monitor *monitor.Monitor, opts ...Option) gin.HandlerFunc {
+	c := newConfig()
+	c.apply(opts...)
 
-// Metric defines a metric object. Users can use it to save
-// metric data. Every metric should be globally unique by name.
-type Metric struct {
-	Type        MetricType
-	Name        string
-	Description string
-	Labels      []string
-	Buckets     []float64
-	Objectives  map[float64]float64
+	m := &metric{
+		Monitor: monitor,
+		config:  c,
+	}
 
-	vec prometheus.Collector
+	m.initGinMetrics()
+	return func(ctx *gin.Context) {
+		startTime := time.Now()
+
+		// execute normal process.
+		ctx.Next()
+
+		// after request
+		m.ginMetricHandle(ctx, startTime)
+	}
 }
 
 const (
-	None MetricType = iota
-	Counter
-	Gauge
-	Histogram
-	Summary
-
-	defaultSlowTime = int32(5)
+	metricURIRequestTotal = "gin_uri_request_total"
+	metricRequestBody     = "gin_request_body_total"
+	metricResponseBody    = "gin_response_body_total"
+	metricRequestDuration = "gin_request_duration"
+	metricSlowRequest     = "gin_slow_request_total"
 )
 
-var (
-	promTypeHandler = map[MetricType]func(metric *Metric) error{
-		Counter:   counterHandler,
-		Gauge:     gaugeHandler,
-		Histogram: histogramHandler,
-		Summary:   summaryHandler,
-	}
-)
-
-// SetGaugeValue set data for Gauge type Metric.
-func (m *Metric) SetGaugeValue(labelValues []string, value float64) error {
-	if m.Type == None {
-		return errors.Errorf("metric '%s' not existed.", m.Name)
-	}
-
-	if m.Type != Gauge {
-		return errors.Errorf("metric '%s' not Gauge type", m.Name)
-	}
-	m.vec.(*prometheus.GaugeVec).WithLabelValues(labelValues...).Set(value)
-	return nil
+type metric struct {
+	*monitor.Monitor
+	*config
 }
 
-// Inc increases value for Counter/Gauge type metric, increments
-// the counter by 1
-func (m *Metric) Inc(labelValues []string) error {
-	if m.Type == None {
-		return errors.Errorf("metric '%s' not existed.", m.Name)
-	}
-
-	if m.Type != Gauge && m.Type != Counter {
-		return errors.Errorf("metric '%s' not Gauge or Counter type", m.Name)
-	}
-	switch m.Type {
-	case Counter:
-		m.vec.(*prometheus.CounterVec).WithLabelValues(labelValues...).Inc()
-	case Gauge:
-		m.vec.(*prometheus.GaugeVec).WithLabelValues(labelValues...).Inc()
-	}
-	return nil
+// initGinMetrics used to init gin metrics
+func (m *metric) initGinMetrics() {
+	m.AddMetric(&monitor.Metric{
+		Type:        monitor.Counter,
+		Name:        metricURIRequestTotal,
+		Description: "all the server received request num with every uri.",
+		Labels:      []string{"uri", "method", "code", "ip"},
+	})
+	m.AddMetric(&monitor.Metric{
+		Type:        monitor.Counter,
+		Name:        metricRequestBody,
+		Description: "the server received request body size, unit byte",
+		Labels:      []string{"uri", "method"},
+	})
+	m.AddMetric(&monitor.Metric{
+		Type:        monitor.Counter,
+		Name:        metricResponseBody,
+		Description: "the server send response body size, unit byte",
+		Labels:      []string{"uri", "method"},
+	})
+	m.AddMetric(&monitor.Metric{
+		Type:        monitor.Histogram,
+		Name:        metricRequestDuration,
+		Description: "the time server took to handle the request.",
+		Labels:      []string{"uri", "method"},
+		Buckets:     m.reqDuration,
+	})
+	m.AddMetric(&monitor.Metric{
+		Type:        monitor.Counter,
+		Name:        metricSlowRequest,
+		Description: fmt.Sprintf("the server handled slow requests counter, t=%d.", m.slowTime),
+		Labels:      []string{"uri", "method"},
+	})
 }
 
-// Add adds the given value to the Metric object. Only
-// for Counter/Gauge type metric.
-func (m *Metric) Add(labelValues []string, value float64) error {
-	if m.Type == None {
-		return errors.Errorf("metric '%s' not existed.", m.Name)
+func (m *metric) ginMetricHandle(ctx *gin.Context, start time.Time) {
+	r := ctx.Request
+	w := ctx.Writer
+
+	labelValues := []string{ctx.FullPath(), r.Method, strconv.Itoa(w.Status()), ctx.ClientIP()}
+
+	// set uri request total
+	_ = m.GetMetric(metricURIRequestTotal).Inc(labelValues)
+
+	// set request body size
+	// since r.ContentLength can be negative (in some occasions) guard the operation
+	if r.ContentLength >= 0 {
+		_ = m.GetMetric(metricRequestBody).Add(labelValues[:2], float64(r.ContentLength))
 	}
 
-	if m.Type != Gauge && m.Type != Counter {
-		return errors.Errorf("metric '%s' not Gauge or Counter type", m.Name)
+	// set response size
+	if w.Size() > 0 {
+		_ = m.GetMetric(metricResponseBody).Add(labelValues[:2], float64(w.Size()))
 	}
-	switch m.Type {
-	case Counter:
-		m.vec.(*prometheus.CounterVec).WithLabelValues(labelValues...).Add(value)
-	case Gauge:
-		m.vec.(*prometheus.GaugeVec).WithLabelValues(labelValues...).Add(value)
-	}
-	return nil
-}
 
-// Observe is used by Histogram and Summary type metric to
-// add observations.
-func (m *Metric) Observe(labelValues []string, value float64) error {
-	if m.Type == 0 {
-		return errors.Errorf("metric '%s' not existed.", m.Name)
-	}
-	if m.Type != Histogram && m.Type != Summary {
-		return errors.Errorf("metric '%s' not Histogram or Summary type", m.Name)
-	}
-	switch m.Type {
-	case Histogram:
-		m.vec.(*prometheus.HistogramVec).WithLabelValues(labelValues...).Observe(value)
-	case Summary:
-		m.vec.(*prometheus.SummaryVec).WithLabelValues(labelValues...).Observe(value)
-	}
-	return nil
-}
+	latency := time.Since(start)
 
-func counterHandler(metric *Metric) error {
-	metric.vec = prometheus.NewCounterVec(
-		prometheus.CounterOpts{Name: metric.Name, Help: metric.Description},
-		metric.Labels,
-	)
-	return nil
-}
+	// set request duration
+	_ = m.GetMetric(metricRequestDuration).Observe(labelValues[:2], float64(latency.Milliseconds()))
 
-func gaugeHandler(metric *Metric) error {
-	metric.vec = prometheus.NewGaugeVec(
-		prometheus.GaugeOpts{Name: metric.Name, Help: metric.Description},
-		metric.Labels,
-	)
-	return nil
-}
-
-func histogramHandler(metric *Metric) error {
-	if len(metric.Buckets) == 0 {
-		return errors.Errorf("metric '%s' is histogram type, cannot lose bucket param.", metric.Name)
+	// set slow request
+	if latency > m.slowTime {
+		_ = m.GetMetric(metricSlowRequest).Inc(labelValues[:2])
 	}
-	metric.vec = prometheus.NewHistogramVec(
-		prometheus.HistogramOpts{Name: metric.Name, Help: metric.Description, Buckets: metric.Buckets},
-		metric.Labels,
-	)
-	return nil
-}
-
-func summaryHandler(metric *Metric) error {
-	if len(metric.Objectives) == 0 {
-		return errors.Errorf("metric '%s' is summary type, cannot lose objectives param.", metric.Name)
-	}
-	prometheus.NewSummaryVec(
-		prometheus.SummaryOpts{Name: metric.Name, Help: metric.Description, Objectives: metric.Objectives},
-		metric.Labels,
-	)
-	return nil
 }
