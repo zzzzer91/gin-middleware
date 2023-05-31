@@ -33,8 +33,9 @@ type config struct {
 	reqDuration []float64
 }
 
-func newConfig() *config {
+func newConfig(m *monitor.Monitor) *config {
 	return &config{
+		m:           m,
 		slowTime:    defaultSlowTime,
 		reqDuration: defaultDuration,
 	}
@@ -43,9 +44,6 @@ func newConfig() *config {
 func (c *config) apply(opts ...Option) {
 	for _, o := range opts {
 		o(c)
-	}
-	if c.m == nil {
-		c.m = monitor.NewMonitor(nil)
 	}
 }
 
@@ -116,12 +114,6 @@ func (c *config) ginMetricHandle(ctx *gin.Context, start time.Time) {
 }
 
 type Option func(c *config)
-
-func WithMonitor(m *monitor.Monitor) Option {
-	return func(c *config) {
-		c.m = m
-	}
-}
 
 func WithSlowTIme(slowTime time.Duration) Option {
 	return func(c *config) {
