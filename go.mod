@@ -6,13 +6,13 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/pkg/errors v0.9.1
 	github.com/zzzzer91/prometheus-monitor v0.0.0-20230531083517-c8b2e6bdc103
-	github.com/zzzzer91/zlog v0.0.0-20230524093435-05b0b983e1b5
-	go.opentelemetry.io/otel v1.15.1
+	github.com/zzzzer91/zlog v0.0.0-20230809111743-86648d97d30e
+	go.opentelemetry.io/otel v1.16.0
 )
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bytedance/sonic v1.9.1 // indirect
+	github.com/bytedance/sonic v1.9.2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
@@ -39,11 +39,12 @@ require (
 	github.com/prometheus/common v0.42.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
-	github.com/sirupsen/logrus v1.9.0 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
-	github.com/zzzzer91/gopkg v0.0.0-20230505041801-df9aeca8ee0a // indirect
-	go.opentelemetry.io/otel/trace v1.15.1 // indirect
+	github.com/zzzzer91/gopkg v0.0.0-20230809092606-a68c6622474f // indirect
+	go.opentelemetry.io/otel/metric v1.16.0 // indirect
+	go.opentelemetry.io/otel/trace v1.16.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.9.0 // indirect
 	golang.org/x/net v0.10.0 // indirect

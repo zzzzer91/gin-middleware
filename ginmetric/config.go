@@ -115,7 +115,7 @@ func (c *config) ginMetricHandle(ctx *gin.Context, start time.Time) {
 
 type Option func(c *config)
 
-func WithSlowTIme(slowTime time.Duration) Option {
+func WithSlowTime(slowTime time.Duration) Option {
 	return func(c *config) {
 		c.slowTime = slowTime
 	}
