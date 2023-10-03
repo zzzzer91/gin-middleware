@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	httpHeaderFieldNameRequestId = "X-Request-ID"
+	httpHeaderFieldNameRequestID = "X-Request-ID"
 )
 
 func Log(isLogInfo bool) gin.HandlerFunc {
@@ -41,10 +41,10 @@ func Log(isLogInfo bool) gin.HandlerFunc {
 
 func newCtx(c *gin.Context) context.Context {
 	ctx := c.Request.Context()
-	if requestId := c.GetHeader(httpHeaderFieldNameRequestId); requestId != "" {
-		ctx = context.WithValue(ctx, zlog.EntityFieldNameRequestId, requestId)
+	if requestID := c.GetHeader(httpHeaderFieldNameRequestID); requestID != "" {
+		ctx = context.WithValue(ctx, zlog.EntityFieldNameRequestID, requestID)
 	}
-	ctx = zlog.AddLogIdToCtx(ctx)
+	ctx = zlog.AddLogIDToCtx(ctx)
 	return ctx
 }
 
